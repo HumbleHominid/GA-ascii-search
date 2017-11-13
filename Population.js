@@ -12,16 +12,17 @@ module.exports = function(popSize = 100, mutationRate = 0.01, target = []) {
   this.calcFitness = calcFitness;
   this.displayStats = displayStats;
   this.nextGeneration = nextGeneration;
-  this.selectIndividual = selectIndividual;
-  this.mutate = mutate;
 
   return this;
 }
 
+// Creates a random ascii character
 function randChar() {
-  return String.fromCharCode(Math.floor(Math.random() * (127 + 1);
+  return String.fromCharCode(Math.floor(Math.random() * 128));
 }
 
+// Populates the population with a random set of ascii strings
+//   of the same length as the target
 function populate() {
   this.population = [];
 
@@ -36,6 +37,8 @@ function populate() {
   }
 }
 
+// Does a random weighted selection of an individual from a population
+//   using the accept/reject algorithm
 function selectIndividual() {
   let individual = null
 
@@ -51,22 +54,24 @@ function selectIndividual() {
   return individual;
 }
 
+// Creates the next generation of the population
 function nextGeneration() {
   let newPop = [];
 
   for (let i = 0; i < this.population.length; i++) {
-    let parentA = this.selectIndividual();
-    let parentB = this.selectIndividual();
+    let parentA = selectIndividual.call(this);
+    let parentB = selectIndividual.call(this);
 
-    let geneticData = parentA.reproduce(parentB);
+    let geneticData = parentA.crossover(parentB);
 
-    newPop.push(new DNA(this.mutate(geneticData)));
+    newPop.push(new DNA(mutate.call(this, geneticData)));
   }
 
   this.population = newPop;
   this.numGenerations++;
 }
 
+// Takes an individual and mutates the genes, if necessary
 function mutate(geneticData) {
   for (let i = 0; i < geneticData.length; i++) {
     if (Math.random() < this.mutationRate) {
@@ -77,6 +82,9 @@ function mutate(geneticData) {
   return geneticData;
 }
 
+// Calculates the fitness of all the individuals in
+//   the population and updates the populations totalFitness,
+//   averageFitness, and bestFit
 function calcFitness() {
   let target = this.target;
   let totalFitness = 0;
@@ -95,6 +103,7 @@ function calcFitness() {
   this.totalFitness = totalFitness;
   this.averageFitness = totalFitness / (this.popSize * target.length);
 
+  // Sorts in descending order
   this.population.sort((a,b) => {
     return b.fitness - a.fitness;
   });
@@ -102,6 +111,7 @@ function calcFitness() {
   this.bestFit = this.population[0];
 }
 
+// Displays some stats about the population
 function displayStats() {
   console.log(`Population Members: ${this.popSize}`);
   console.log(`Generations: ${this.numGenerations}`);

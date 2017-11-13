@@ -2,22 +2,24 @@ module.exports = function(dnaData = []) {
   this.dnaData = dnaData;
 
   this.toString = toString;
-  this.reproduce = reproduce;
+  this.crossover = crossover;
 
   return this;
 }
 
+// Translates the object data to a string
 function toString() {
   return this.dnaData.join('');
 }
 
-function reproduce(other) {
+// Combines part of this gene's data with the parameter gene's data
+// Returns a new gene
+function crossover(other) {
   let offspring = [];
   let myData = this.dnaData;
-  let rand = Math.floor(Math.random() * myData.length);
 
   for (let i = 0; i < myData.length; i++) {
-    if (i < rand) {
+    if (i < Math.floor(Math.random() * myData.length)) {
       offspring.push(myData[i]);
     }
     else {
