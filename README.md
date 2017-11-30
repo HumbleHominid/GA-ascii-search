@@ -1,6 +1,6 @@
-# GA-ascii-search
+a# GA-ascii-search
 
 ## Requirements
-- > node 6.x.x
+> &gt; node 6.x.x
 
 Download a copy of the repository then run with `node index`. Alter `popSize`, `mutationRate`, and `target` variables in `index.js` to modify runtime environment.
