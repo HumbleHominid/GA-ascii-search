@@ -8,7 +8,6 @@ module.exports = function(popSize = 100, mutationRate = 0.0025, target = []) {
   this.maxFitness = target.length;
   this.population = [];
   this.numGenerations = 0;
-  this.bestFit = null;
 
   // Bind object methods
   this.populate = populate;
@@ -86,13 +85,13 @@ function mutate(geneticData) {
 }
 
 // Calculates the fitness of all the individuals in
-//    the population and updates the populations totalFitness,
-//    averageFitness, and bestFit
+//    the population and updates the populations totalFitness, and
+//    averageFitness
 // Returns the bestFit individual
 function calcFitness() {
   let target = this.target;
   let totalFitness = 0;
-  this.bestFit = null;
+  let bestFit = null;
 
   this.population.forEach((individual) => {
     let fitness = 0;
@@ -104,15 +103,15 @@ function calcFitness() {
     individual.fitness = fitness;
     totalFitness = totalFitness + fitness;
 
-    if (this.bestFit === null || this.bestFit.fitness < fitness) {
-      this.bestFit = individual;
+    if (bestFit === null || bestFit.fitness < fitness) {
+      bestFit = individual;
     }
   });
 
   this.totalFitness = totalFitness;
   this.averageFitness = totalFitness / (this.popSize * target.length);
 
-  return this.bestFit;
+  return bestFit;
 }
 
 // Displays some stats about the population
