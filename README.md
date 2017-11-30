@@ -1,4 +1,5 @@
-a# GA-ascii-search
+# GA-ascii-search
+Tries so find a target string from a list of randomly generated ascii strings of same length as the target using a genetic algorithm.
 
 ## Requirements
 > &gt; node 6.x.x
