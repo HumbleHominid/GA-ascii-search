@@ -1,13 +1,16 @@
 const DNA = require('./DNA');
 
-module.exports = function(popSize = 100, mutationRate = 0.01, target = []) {
+module.exports = function(popSize = 100, mutationRate = 0.0025, target = []) {
+  // Bind object data
   this.popSize = popSize;
   this.mutationRate = mutationRate;
   this.target = target;
   this.maxFitness = target.length;
   this.population = [];
   this.numGenerations = 0;
+  this.bestFit = null;
 
+  // Bind object methods
   this.populate = populate;
   this.calcFitness = calcFitness;
   this.displayStats = displayStats;
@@ -22,7 +25,7 @@ function randChar() {
 }
 
 // Populates the population with a random set of ascii strings
-//   of the same length as the target
+//    of the same length as the target
 function populate() {
   this.population = [];
 
@@ -38,13 +41,13 @@ function populate() {
 }
 
 // Does a random weighted selection of an individual from a population
-//   using the accept/reject algorithm
+//    using the accept/reject algorithm
 function selectIndividual() {
   let individual = null
+  let population = this.population;
 
   while (individual === null) {
-    selected = this.population[Math.floor(Math.random() *
-        this.population.length)];
+    selected = population[Math.floor(Math.random() * population.length)];
 
     if (Math.random() < selected.fitness / this.maxFitness) {
       individual = selected;
@@ -83,11 +86,13 @@ function mutate(geneticData) {
 }
 
 // Calculates the fitness of all the individuals in
-//   the population and updates the populations totalFitness,
-//   averageFitness, and bestFit
+//    the population and updates the populations totalFitness,
+//    averageFitness, and bestFit
+// Returns the bestFit individual
 function calcFitness() {
   let target = this.target;
   let totalFitness = 0;
+  this.bestFit = null;
 
   this.population.forEach((individual) => {
     let fitness = 0;
@@ -98,17 +103,16 @@ function calcFitness() {
 
     individual.fitness = fitness;
     totalFitness = totalFitness + fitness;
+
+    if (this.bestFit === null || this.bestFit.fitness < fitness) {
+      this.bestFit = individual;
+    }
   });
 
   this.totalFitness = totalFitness;
   this.averageFitness = totalFitness / (this.popSize * target.length);
 
-  // Sorts in descending order
-  this.population.sort((a,b) => {
-    return b.fitness - a.fitness;
-  });
-
-  this.bestFit = this.population[0];
+  return this.bestFit;
 }
 
 // Displays some stats about the population
